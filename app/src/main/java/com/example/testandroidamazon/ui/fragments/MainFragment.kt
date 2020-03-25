@@ -7,29 +7,33 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.testandroidamazon.databinding.FragmentMainBinding
+import com.example.testandroidamazon.ui.adapters.PostAdapter
 
 
 class MainFragment : Fragment() {
-    private var mBinding: FragmentMainBinding? = null
-    private val binding get() = mBinding!!
+    private var _binding: FragmentMainBinding? = null
+    private var _postAdapter = PostAdapter()
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        mBinding = FragmentMainBinding.inflate(inflater, container, false)
+        _binding = FragmentMainBinding.inflate(inflater, container, false)
         setupRecyclerView()
-        return mBinding!!.root
+        return _binding?.root
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        mBinding = null
+        _binding = null
     }
 
     fun setupRecyclerView() {
-        mBinding?.mainRecyclerView?.setHasFixedSize(true)
-        mBinding?.mainRecyclerView?.setLayoutManager(LinearLayoutManager(this.context))
+        _binding?.mainRecyclerView?.apply {
+            setHasFixedSize(true)
+            layoutManager = LinearLayoutManager(this.context)
+            adapter = _postAdapter
+        }
     }
 }
