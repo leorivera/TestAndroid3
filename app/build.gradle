@@ -26,8 +26,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
-    viewBinding.enabled = true
 
+    dataBinding {
+        enabled = true
+    }
 }
 
 dependencies {
@@ -50,10 +52,19 @@ dependencies {
     //CardView
     implementation "androidx.cardview:cardview:$cardViewVersion"
 
+    // ViewModel
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleVersion"
+
+    // LiveData
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycleVersion"
+
+    // Retrofit
+    implementation "com.squareup.retrofit2:retrofit:$retrofitVersion"
+    implementation "com.squareup.retrofit2:converter-gson:$retrofitVersion"
+    implementation "com.squareup.okhttp3:logging-interceptor:$loggingInterceptorVersion"
+
     //Test
     androidTestImplementation "androidx.test.ext:junit:$androidXTestExtVersion"
     androidTestImplementation "androidx.test.espresso:espresso-core:$androidXTestEspressoVersion"
     androidTestImplementation "androidx.navigation:navigation-testing:$androidXNavigationVersion"
-
-
 }
