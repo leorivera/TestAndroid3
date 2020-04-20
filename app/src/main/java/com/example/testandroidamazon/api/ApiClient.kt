@@ -5,19 +5,21 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-class ApiClient {
-    private val loggingInterceptor = HttpLoggingInterceptor()
-    private val httpClient = OkHttpClient.Builder()
-    private val retrofit = Retrofit.Builder()
+object ApiClient {
+    val _loggingInterceptor = HttpLoggingInterceptor()
+    val _httpClient = OkHttpClient.Builder()
+    private val _retrofit by lazy { initializeRetrofit() }
 
-    init {
-        loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
-        httpClient.addInterceptor(loggingInterceptor)
-        retrofit
-            .baseUrl("hola")
+    fun initializeRetrofit(): Retrofit {
+        _loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
+        _httpClient.addInterceptor(_loggingInterceptor)
+
+        return Retrofit.Builder()
+            .baseUrl("https://www.reddit.com/")
             .addConverterFactory(GsonConverterFactory.create())
-            .client(httpClient.build())
+            .client(_httpClient.build())
             .build()
     }
 
+    fun <T> getService(serviceClass: Class<T>): T = _retrofit.create(serviceClass)
 }

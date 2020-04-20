@@ -39,6 +39,8 @@ dependencies {
     implementation "androidx.core:core-ktx:$coreVersion"
     implementation "androidx.constraintlayout:constraintlayout:$constraintLayoutVersion"
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
     testImplementation "junit:junit:$junitVersion"
 
     // Navigation
@@ -63,7 +65,18 @@ dependencies {
     implementation "com.squareup.retrofit2:converter-gson:$retrofitVersion"
     implementation "com.squareup.okhttp3:logging-interceptor:$loggingInterceptorVersion"
 
-    //Test
+    // Coroutines
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$CoroutinesVersion"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$CoroutinesVersion"
+
+    // Glide
+    implementation "com.github.bumptech.glide:glide:$GlideVersion"
+    annotationProcessor "com.github.bumptech.glide:compiler:$GlideVersion"
+
+    // Paging
+    implementation "androidx.paging:paging-runtime:$pagingVersion"
+
+    // Test
     androidTestImplementation "androidx.test.ext:junit:$androidXTestExtVersion"
     androidTestImplementation "androidx.test.espresso:espresso-core:$androidXTestEspressoVersion"
     androidTestImplementation "androidx.navigation:navigation-testing:$androidXNavigationVersion"
