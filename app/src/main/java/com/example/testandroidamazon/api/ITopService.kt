@@ -7,7 +7,5 @@ import retrofit2.http.Query
 interface ITopService {
     @GET("top.json")
     suspend fun requestTop(
-        @Query("after") after: String? = null,
-        @Query("before") before: String? = null
-    ): Response<ResponsePost>
+        @Query("after") after: String? = null): Response<ResponsePost>
 }

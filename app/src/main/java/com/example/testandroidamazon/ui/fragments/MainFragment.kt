@@ -38,11 +38,16 @@ class MainFragment : Fragment(), IPostAdapterOnClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupRecyclerView()
         _navController = Navigation.findNavController(view)
+        setupRecyclerView()
         _viewModel.getListPost().observe(viewLifecycleOwner, Observer {
+            _binding.mainSwipeRefreshLayout.isRefreshing=true
             _postAdapter.submitList(it)
         })
+        _viewModel.getProgress().observe(viewLifecycleOwner, Observer {
+                _binding.mainSwipeRefreshLayout.isRefreshing = it
+        })
+
     }
 
     fun setupBindig() {
@@ -60,6 +65,7 @@ class MainFragment : Fragment(), IPostAdapterOnClickListener {
     }
 
     override fun detailPost(postViewData: PostViewData) {
+        _binding.mainSwipeRefreshLayout.isRefreshing=false
         val action = MainFragmentDirections.actionMainFragmentToDetailFragment(postViewData)
         _navController.navigate(action)
     }

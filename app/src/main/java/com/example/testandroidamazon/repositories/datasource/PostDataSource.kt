@@ -1,6 +1,7 @@
-package com.example.testandroidamazon.repositories
+package com.example.testandroidamazon.repositories.datasource
 
 import android.util.Log
+import androidx.lifecycle.MutableLiveData
 import androidx.paging.PageKeyedDataSource
 import com.example.testandroidamazon.api.ApiClient
 import com.example.testandroidamazon.api.ChildrenData
@@ -15,29 +16,35 @@ import java.util.*
 
 import kotlin.coroutines.CoroutineContext
 
-class DataSourcePost(coroutineContext: CoroutineContext) :
+class PostDataSource(coroutineContext: CoroutineContext) :
     PageKeyedDataSource<String, PostViewData>() {
     private val _service = ApiClient.getService(ITopService::class.java)
     private val job = Job()
     private val scope = CoroutineScope(coroutineContext + job)
+    var _progress = MutableLiveData<Boolean>(true)
+
+    fun getProgress(): MutableLiveData<Boolean> = _progress
 
     override fun loadInitial(
         params: LoadInitialParams<String>,
         callback: LoadInitialCallback<String, PostViewData>
     ) {
         scope.launch {
+            _progress.postValue(true)
             try {
                 val result = _service.requestTop()
-                when {
-                    result.isSuccessful -> {
-                        val listing = result.body()?.data
-                        callback.onResult(
-                            createListPostViewData(listing)?: listOf(), listing?.before, listing?.after)
-                    }
+                if (result.isSuccessful) {
+                    val listing = result.body()?.data
+                    callback.onResult(createListPostViewData(listing) ?: listOf(),
+                                        listing?.before,
+                                        listing?.after)
+                } else {
+                    Log.e("DataSourcePost", result.message())
                 }
             } catch (exception: Exception) {
-                Log.e("DataSourcePost", "Failed to fetch data!-loadInitial")
+                Log.e("Failed data loadInitial", exception.message.toString())
             }
+            _progress.postValue(false)
         }
     }
 
@@ -46,9 +53,9 @@ class DataSourcePost(coroutineContext: CoroutineContext) :
         callback: LoadCallback<String, PostViewData>
     ) {
         scope.launch {
+            _progress.postValue(true)
             try {
-                val result =
-                    _service.requestTop(after = params.key)
+                val result = _service.requestTop(after = params.key)
                 when {
                     result.isSuccessful -> {
                         val listing = result.body()?.data
@@ -58,37 +65,15 @@ class DataSourcePost(coroutineContext: CoroutineContext) :
                         )
                     }
                 }
+
             } catch (exception: Exception) {
-                Log.e("DataSourcePost", "Failed to fetch data!-loadAfter")
+                Log.e("Failed data loadAfter", exception.message.toString())
             }
+            _progress.postValue(false)
         }
     }
 
-    override fun loadBefore(
-        params: LoadParams<String>,
-        callback: LoadCallback<String, PostViewData>
-    ) {
-        scope.launch {
-            try {
-                val result =
-                    _service.requestTop(before = params.key)
-                when {
-                    result.isSuccessful -> {
-                        val listing = result.body()?.data
-                        callback.onResult(
-                            createListPostViewData(listing)?: listOf(), listing?.after)
-                    }
-                }
-            } catch (exception: Exception) {
-                Log.e("DataSourcePost", "Failed to fetch data!-loadBefore")
-            }
-        }
-    }
-
-    override fun invalidate() {
-        super.invalidate()
-        job.cancel()
-    }
+    override fun loadBefore(params: LoadParams<String>, callback: LoadCallback<String, PostViewData>) { }
 
     fun createListPostViewData(listing: Data?): MutableList<PostViewData> {
         val items = listing?.children?.map { it.data }
@@ -120,4 +105,10 @@ class DataSourcePost(coroutineContext: CoroutineContext) :
         }
         return result
     }
+
+    override fun invalidate() {
+        super.invalidate()
+        job.cancel()
+    }
+
 }

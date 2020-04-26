@@ -1,13 +1,9 @@
 package com.example.testandroidamazon.usecases
 
-import androidx.lifecycle.LiveData
-import androidx.paging.LivePagedListBuilder
-import androidx.paging.PagedList
-import com.example.testandroidamazon.api.ChildrenData
-import com.example.testandroidamazon.repositories.ITopRepository
-import com.example.testandroidamazon.viewdata.PostViewData
+import com.example.testandroidamazon.dtos.PostDTO
+import com.example.testandroidamazon.repositories.IRepository
 
-class GetTopUseCase(private val _topRepository: ITopRepository) {
+class GetTopUseCase(private val _repository: IRepository) {
 
-   fun initializedPagedListBuilder(): LiveData<PagedList<PostViewData>> = _topRepository.initializedPagedListBuilder()
+   fun initializedPagedListBuilder(): PostDTO = _repository.initializedPagedListBuilder()
 }
